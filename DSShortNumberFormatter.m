@@ -30,9 +30,16 @@
 }
 
 - (NSString *)stringFromNumber:(NSNumber *)number {
+    if ([self numberStyle] == NSNumberFormatterPercentStyle ||
+        [self numberStyle] == NSNumberFormatterScientificStyle)
+        return [super stringFromNumber:number];
+    
     double num_val = [number doubleValue];
     NSArray *patterns = [self patternsForLocale:[self locale]];
     double divide_zeroes = 0;
+    
+    NSString *orig_positive_format = [self positiveFormat];
+    NSString *orig_negative_format = [self negativeFormat];
         
     for (NSDictionary *patternInfo in patterns) {
         NSString *pattern = patternInfo[@"pattern"];
@@ -50,19 +57,32 @@
         if (num_val >= [type doubleValue]) {
             NSInteger type_zeroes = [type length] - 1;
             NSInteger pattern_zeroes = 0;
+            NSInteger first_zero = -1;
             for (int i=0; i<[pattern length]; i++) {
-                if ([pattern characterAtIndex:i] == '0')
+                if ([pattern characterAtIndex:i] == '0') {
+                    if (first_zero == -1)
+                        first_zero = i;
                     pattern_zeroes++;
+                }
             }
             divide_zeroes = (type_zeroes - pattern_zeroes + 1);
             
             [self setMultiplier:@(pow(10.0, -divide_zeroes))];
-            [self setPositiveFormat:pattern];
-            [self setNegativeFormat:pattern];
+            
+            NSString *new_positive_pattern = [pattern stringByReplacingCharactersInRange:NSMakeRange(first_zero, pattern_zeroes)
+                                                                              withString:orig_positive_format];
+            NSString *new_negative_pattern = [pattern stringByReplacingCharactersInRange:NSMakeRange(first_zero, pattern_zeroes)
+                                                                              withString:orig_negative_format];
+            
+            [self setPositiveFormat:new_positive_pattern];
+            [self setNegativeFormat:new_negative_pattern];
         }
     }
     
-    return [super stringFromNumber:number];
+    NSString *result = [super stringFromNumber:number];
+    [self setPositiveFormat:orig_positive_format];
+    [self setNegativeFormat:orig_negative_format];
+    return result;
 }
 
 @end
