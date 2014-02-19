@@ -54,7 +54,7 @@
         if (![count isEqualToString:@"other"])
             continue;
         
-        if (num_val >= [type doubleValue]) {
+        if (fabs(num_val) >= [type doubleValue]) {
             NSInteger type_zeroes = [type length] - 1;
             NSInteger pattern_zeroes = 0;
             NSInteger first_zero = -1;
