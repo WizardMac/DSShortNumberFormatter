@@ -67,7 +67,7 @@
             }
             divide_zeroes = (type_zeroes - pattern_zeroes + 1);
             
-            [self setMultiplier:@(pow(10.0, -divide_zeroes))];
+            self.multiplier = @(pow(10.0, -divide_zeroes));
             
             NSString *new_positive_pattern = [pattern stringByReplacingCharactersInRange:NSMakeRange(first_zero, pattern_zeroes)
                                                                               withString:orig_positive_format];
