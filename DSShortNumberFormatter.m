@@ -36,7 +36,6 @@
     
     double num_val = number.doubleValue;
     NSArray<NSDictionary<NSString *, NSString *> *> *patterns = [self patternsForLocale:self.locale];
-    double divide_zeroes = 0;
     
     NSString *orig_positive_format = self.positiveFormat;
     NSString *orig_negative_format = self.negativeFormat;
@@ -65,17 +64,11 @@
                     pattern_zeroes++;
                 }
             }
-            divide_zeroes = (type_zeroes - pattern_zeroes + 1);
-            
-            self.multiplier = @(__exp10(-divide_zeroes));
-            
-            NSString *new_positive_pattern = [pattern stringByReplacingCharactersInRange:NSMakeRange(first_zero, pattern_zeroes)
-                                                                              withString:orig_positive_format];
-            NSString *new_negative_pattern = [pattern stringByReplacingCharactersInRange:NSMakeRange(first_zero, pattern_zeroes)
-                                                                              withString:orig_negative_format];
-            
-            self.positiveFormat = new_positive_pattern;
-            self.negativeFormat = new_negative_pattern;
+            self.multiplier = @(__exp10(-(type_zeroes - pattern_zeroes + 1)));
+            self.positiveFormat = [pattern stringByReplacingCharactersInRange:NSMakeRange(first_zero, pattern_zeroes)
+                                                                   withString:orig_positive_format];
+            self.negativeFormat = [pattern stringByReplacingCharactersInRange:NSMakeRange(first_zero, pattern_zeroes)
+                                                                   withString:orig_negative_format];
         }
     }
     
