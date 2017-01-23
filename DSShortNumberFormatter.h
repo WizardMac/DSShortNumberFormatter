@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 
 @interface DSShortNumberFormatter : NSNumberFormatter {
-    NSDictionary *pattern_dict;
+    NSDictionary<NSString *, NSArray<NSDictionary<NSString *, NSString *> *> *> *pattern_dict;
 }
 
 @end

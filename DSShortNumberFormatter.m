@@ -3,7 +3,7 @@
 
 @implementation DSShortNumberFormatter
 
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (self) {
         NSURL *pattern_plist_url = [[NSBundle mainBundle] URLForResource:@"patterns" withExtension:@"plist"];
@@ -17,14 +17,14 @@
     [super dealloc];
 }
 
-- (NSArray *)patternsForLocale:(NSLocale *)locale {
+- (NSArray<NSDictionary<NSString *, NSString *> *> *)patternsForLocale:(NSLocale *)locale {
     NSString *identifier = locale.localeIdentifier;
     if (pattern_dict[identifier])
         return pattern_dict[identifier];
     
-    NSArray *components = [identifier componentsSeparatedByString:@"_"];
-    if (pattern_dict[components[0]])
-        return pattern_dict[components[0]];
+    NSArray<NSString *> *components = [identifier componentsSeparatedByString:@"_"];
+    if (components.firstObject && pattern_dict[(NSString *)components.firstObject])
+        return pattern_dict[(NSString *)components.firstObject];
     
     return pattern_dict[@"root"];
 }
@@ -35,13 +35,13 @@
         return [super stringFromNumber:number];
     
     double num_val = number.doubleValue;
-    NSArray *patterns = [self patternsForLocale:self.locale];
+    NSArray<NSDictionary<NSString *, NSString *> *> *patterns = [self patternsForLocale:self.locale];
     double divide_zeroes = 0;
     
     NSString *orig_positive_format = self.positiveFormat;
     NSString *orig_negative_format = self.negativeFormat;
         
-    for (NSDictionary *patternInfo in patterns) {
+    for (NSDictionary<NSString *, NSString *> *patternInfo in patterns) {
         NSString *pattern = patternInfo[@"pattern"];
         NSString *count = patternInfo[@"count"];
         NSString *type = patternInfo[@"type"];
@@ -67,7 +67,7 @@
             }
             divide_zeroes = (type_zeroes - pattern_zeroes + 1);
             
-            self.multiplier = @(pow(10.0, -divide_zeroes));
+            self.multiplier = @(__exp10(-divide_zeroes));
             
             NSString *new_positive_pattern = [pattern stringByReplacingCharactersInRange:NSMakeRange(first_zero, pattern_zeroes)
                                                                               withString:orig_positive_format];
