@@ -6,7 +6,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        NSURL *pattern_plist_url = [[NSBundle mainBundle] URLForResource:@"patterns" withExtension:@"plist"];
+        NSURL *pattern_plist_url = [NSBundle.mainBundle URLForResource:@"patterns" withExtension:@"plist"];
         pattern_dict = [[NSDictionary alloc] initWithContentsOfURL:pattern_plist_url];
     }
     return self;
@@ -23,8 +23,8 @@
         return pattern_dict[identifier];
     
     NSArray<NSString *> *components = [identifier componentsSeparatedByString:@"_"];
-    if (components.firstObject && pattern_dict[(NSString *)components.firstObject])
-        return pattern_dict[(NSString *)components.firstObject];
+    if (components.firstObject && pattern_dict[components.firstObject])
+        return pattern_dict[components.firstObject];
     
     return pattern_dict[@"root"];
 }
