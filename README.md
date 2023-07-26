@@ -1,7 +1,7 @@
 DSShortNumberFormatter
 ======================
 
-Locale-aware NSNumberFormatter subclass for formatting compact numbers (e.g. "12K" for 12,000).
+Locale-aware NSNumberFormatter subclass for formatting compact numbers (e.g. "12k" for 12,000).
 
 This library requires a copy of the Unicode Common Locale Data Repository (CLDR):
 
