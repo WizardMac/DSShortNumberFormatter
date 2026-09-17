@@ -3,12 +3,25 @@ DSShortNumberFormatter
 
 Locale-aware NSNumberFormatter subclass for formatting compact numbers (e.g. "12K" for 12,000).
 
-This library requires a copy of the Unicode Common Locale Data Repository (CLDR):
+Usage is the same as a normal NSNumberFormatter. Both directions work: `stringFromNumber:` produces the compact form and `numberFromString:` parses it back ("1.5M" gives 1,500,000). Percent and scientific styles are passed through unchanged.
 
-http://cldr.unicode.org/index/downloads
+Installation
+------------
 
-Once you download and unzip a release, edit the Makefile in this directory to point to the CLDR "core" directory. Then type "make" to generate a patterns.plist file.
+Copy DSShortNumberFormatter.m, DSShortNumberFormatter.h, and patterns.plist into your Xcode project. The formatter compiles with or without ARC and requires macOS 10.12 or iOS 10.
 
-Now you can install by copying DSShortNumberFormatter.m, DSShortNumberFormatter.h, and patterns.plist into your Xcode project.
+patterns.plist holds the compact-number patterns for every locale, extracted from the Unicode Common Locale Data Repository (CLDR). The copy in this repository is generated from CLDR 48.
 
-Usage is the same as a normal NSNumberFormatter.
+Regenerating patterns.plist
+---------------------------
+
+Download and unzip a CLDR "core" release from https://unicode.org/Public/cldr/ and run:
+
+    make patterns.plist CLDR=/path/to/core
+
+Tests
+-----
+
+    make test
+
+This builds the tests in tests/test.m with and without ARC and runs them against patterns.plist.
